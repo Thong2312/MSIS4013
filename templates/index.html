@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">Thêm nhân viên mới</h5>
+    <form method="post">
+      <input type="hidden" name="action" value="add">
+      <div class="row g-2">
+        <div class="col">
+          <input type="text" name="name" class="form-control" placeholder="Tên" required>
+        </div>
+        <div class="col">
+          <input type="number" name="salary" class="form-control" placeholder="Lương" step="0.01" required>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-primary">Thêm</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th><th>Tên</th><th>Lương</th><th>Phòng ban</th>
+      <th>Gán PB</th><th>Chỉnh lương</th><th>Sửa</th><th>Xoá</th><th>Log</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for emp in employees %}
+    <tr>
+      <td>{{ emp.id }}</td>
+      <td>{{ emp.name }}</td>
+      <td>{{ '%.2f'|format(emp.salary) }}</td>
+      <td>{{ emp.dept_id or '' }}</td>
+      <td>
+        <form action="{{ url_for('assign_dept') }}" method="post" class="d-flex">
+            <input type="hidden" name="emp_id" value="{{ emp.id }}">
+            <select name="dept_id" class="form-select form-select-sm" style="width:120px" required>
+                <option value="" disabled selected>Chọn PB</option>
+                {% for d in depts %}
+                    <option value="{{ d.dept_id }}">{{ d.dept_id }} - {{ d.name }}</option>
+                    {% endfor %}
+            </select>
+            <button class="btn btn-sm btn-secondary ms-1">OK</button>
+        </form>
+      </td>
+      <td>
+        <form class="d-inline" action="{{ url_for('increase') }}" method="post">
+          <input type="hidden" name="emp_id" value="{{ emp.id }}">
+          <input type="number" name="amount" step="0.01" value="100.00" style="width:80px" required>
+          <button class="btn btn-sm btn-success">Điều chỉnh</button>
+        </form>
+      </td>
+      <td>
+        <a href="{{ url_for('edit', emp_id=emp.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+      </td>
+      <td>
+        <form action="{{ url_for('delete', emp_id=emp.id) }}" method="post" onsubmit="return confirm('Xoá?');">
+          <button class="btn btn-sm btn-danger">Xoá</button>
+        </form>
+      </td>
+      <td>
+        <a class="btn btn-sm btn-info" href="{{ url_for('index', emp_id=emp.id) }}">
+          Xem log
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if audits %}
+  <h5>Lịch sử thay đổi lương của NV #{{ selected_id }}</h5>
+  <table class="table table-bordered">
+    <thead><tr>
+      <th>Log ID</th><th>Cũ</th><th>Mới</th><th>Nội dung thay đổi</th>
+    </tr></thead>
+    <tbody>
+      {% for a in audits %}
+      <tr>
+        <td>{{ a.audit_id }}</td>
+        <td>{{ '%.2f'|format(a.old_salary) }}</td>
+        <td>{{ '%.2f'|format(a.new_salary) }}</td>
+        <td>{{ a.change_desc }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% endblock %}

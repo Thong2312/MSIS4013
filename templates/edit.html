@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h5>Cập nhật nhân viên #{{ emp.id }}</h5>
+<form method="post" class="row g-2">
+  <div class="col"><input name="name" class="form-control" value="{{ emp.name }}" required></div>
+  <div class="col"><input name="salary" type="number" step="0.01" class="form-control" value="{{ emp.salary }}" required></div>
+  <div class="col-auto"><button class="btn btn-primary">Lưu</button></div>
+</form>
+{% endblock %}

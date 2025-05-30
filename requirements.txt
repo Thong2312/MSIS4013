@@ -1,0 +1,2 @@
+Flask==2.2.5
+pypyodbc>=1.3

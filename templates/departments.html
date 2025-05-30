@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h5>Quản lý Phòng ban</h5>
+    <form method="post" class="row g-2">
+      <div class="col"><input name="dept_name" class="form-control" placeholder="Tên phòng ban" required></div>
+      <div class="col-auto"><button class="btn btn-primary">Thêm</button></div>
+    </form>
+  </div>
+</div>
+<table class="table">
+  <thead><tr><th>#</th><th>Tên</th></tr></thead>
+  <tbody>
+    {% for d in depts %}
+    <tr><td>{{ d.dept_id }}</td><td>{{ d.name }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
